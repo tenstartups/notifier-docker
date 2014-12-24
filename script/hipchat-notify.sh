@@ -28,7 +28,7 @@ fi
 
 # Send the notification
 printf "Sending hipchat room notification... "
-curl \
+curl -s \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -H "Authorization: Bearer ${HIPCHAT_AUTH_TOKEN}" \
   -X POST \
@@ -41,7 +41,7 @@ echo "done."
 # Send the associated file attachment if present
 if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
   printf "Sharing file ${FILE_ATTACHMENT} in hipchat room... "
-  curl \
+  curl -s \
     -H "Content-Type: multipart/related" \
     -H "Authorization: Bearer ${HIPCHAT_AUTH_TOKEN}" \
     -F "file=@${FILE_ATTACHMENT};type=${ATTACHMENT_MIME_TYPE}" \
