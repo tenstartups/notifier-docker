@@ -8,15 +8,15 @@ HOSTNAME="$(hostname | awk '{print toupper($0)}')"
 ATTACHMENT_MIME_TYPE="${ATTACHMENT_MIME_TYPE:-text/plain}"
 
 # Exit with error if required variables not provided
-if [ "${HIPCHAT_AUTH_TOKEN}" == "" ]; then
+if [ -z "${HIPCHAT_AUTH_TOKEN}" ]; then
   echo "Envrionment variable HIPCHAT_AUTH_TOKEN must be set"
   exit 1
 fi
-if [ "${HIPCHAT_ROOM_ID}" == "" ]; then
+if [ -z "${HIPCHAT_ROOM_ID}" ]; then
   echo "Envrionment variable HIPCHAT_ROOM_ID must be set"
   exit 1
 fi
-if [ "${MESSAGE}" == "" ]; then
+if [ -z "${MESSAGE}" ]; then
   echo "Envrionment variable MESSAGE must be set"
   exit 1
 fi
@@ -28,24 +28,26 @@ fi
 
 # Send the notification
 printf "Sending hipchat room notification... "
-curl -s \
+curl \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -H "Authorization: Bearer ${HIPCHAT_AUTH_TOKEN}" \
   -X POST \
   -d "color=${NOTICE_COLOR}" \
   -d "message_format=html" \
   -d "message=<strong><em>${HOSTNAME}</em></strong> ${MESSAGE}" \
-  https://api.hipchat.com/v2/room/${HIPCHAT_ROOM_ID}/notification
+  https://api.hipchat.com/v2/room/${HIPCHAT_ROOM_ID}/notification \
+  >/dev/null
 echo "done."
 
 # Send the associated file attachment if present
 if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
   printf "Sharing file ${FILE_ATTACHMENT} in hipchat room... "
-  curl -s \
+  curl \
     -H "Content-Type: multipart/related" \
     -H "Authorization: Bearer ${HIPCHAT_AUTH_TOKEN}" \
     -F "file=@${FILE_ATTACHMENT};type=${ATTACHMENT_MIME_TYPE}" \
     -X POST \
-    https://api.hipchat.com/v2/room/${HIPCHAT_ROOM_ID}/share/file
+    https://api.hipchat.com/v2/room/${HIPCHAT_ROOM_ID}/share/file \
+    >/dev/null
   echo "done."
 fi

@@ -9,7 +9,7 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
 # Set environment variables.
 ENV DEBIAN_FRONTEND noninteractive
-ENV TERM xterm
+ENV TERM xterm-color
 
 # Install base packages.
 RUN apt-get update

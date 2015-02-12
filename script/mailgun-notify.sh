@@ -6,23 +6,23 @@ MESSAGE="${MESSAGE:-$1}"
 HOSTNAME="$(hostname | awk '{print toupper($0)}')"
 
 # Exit with error if required variables not provided
-if [ "${MAILGUN_DOMAIN}" == "" ]; then
+if [ -z "${MAILGUN_DOMAIN}" ]; then
   echo "Envrionment variable MAILGUN_DOMAIN must be set"
   exit 1
 fi
-if [ "${MAILGUN_API_KEY}" == "" ]; then
+if [ -z "${MAILGUN_API_KEY}" ]; then
   echo "Envrionment variable MAILGUN_API_KEY must be set"
   exit 1
 fi
-if [ "${MAILGUN_FROM}" == "" ]; then
+if [ -z "${MAILGUN_FROM}" ]; then
   echo "Envrionment variable MAILGUN_FROM must be set"
   exit 1
 fi
-if [ "${MAILGUN_TO}" == "" ]; then
+if [ -z "${MAILGUN_TO}" ]; then
   echo "Envrionment variable MAILGUN_TO must be set"
   exit 1
 fi
-if [ "${MESSAGE}" == "" ]; then
+if [ -z "${MESSAGE}" ]; then
   echo "Envrionment variable MESSAGE must be set"
   exit 1
 fi
@@ -38,7 +38,7 @@ if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
     -F text="See attached log file for details." \
     --form-string html="<html>See attached log file for details.</html>" \
     -F attachment="@${FILE_ATTACHMENT}" \
-    > /dev/null
+    >/dev/null
   echo "done."
 else
   printf "Sending mailgun email notification... "
@@ -49,6 +49,6 @@ else
     -F subject="(${HOSTNAME}) ${MESSAGE}" \
     -F text="(${HOSTNAME}) ${MESSAGE}" \
     --form-string html="<strong><em>${HOSTNAME}</em></strong> ${MESSAGE}" \
-    > /dev/null
+    >/dev/null
   echo "done."
 fi
