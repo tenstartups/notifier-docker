@@ -3,7 +3,7 @@ set -e
 
 # Set environment
 MESSAGE="${MESSAGE:-$1}"
-HOSTNAME=$(hostname | awk '{print toupper($0)}')
+HOSTNAME="$(hostname | awk '{print toupper($0)}')"
 
 # Exit with error if required variables not provided
 if [ -z "${MAILGUN_DOMAIN}" ]; then
@@ -26,9 +26,9 @@ fi
 # Set the from address if not specified
 MAILGUN_FROM="${MAILGUN_FROM:-$HOSTNAME@$MAILGUN_DOMAIN}"
 
-# Send the associated file attachment if present
+# Send the notification using the mailgun API
 if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
-  printf "Sending mailgun email notification with file ${FILE_ATTACHMENT}... "
+  printf "Sending notification to mailgun email with file ${FILE_ATTACHMENT}... "
   curl -s --user "${MAILGUN_API_KEY}" \
     "https://api.mailgun.net/v2/${MAILGUN_DOMAIN}/messages" \
     -F from="${MAILGUN_FROM}" \
@@ -40,7 +40,7 @@ if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
     >/dev/null
   echo "done."
 else
-  printf "Sending mailgun email notification... "
+  printf "Sending notification to mailgun email... "
   curl -s --user "${MAILGUN_API_KEY}" \
     "https://api.mailgun.net/v2/${MAILGUN_DOMAIN}/messages" \
     -F from="${MAILGUN_FROM}" \
