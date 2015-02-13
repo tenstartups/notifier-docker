@@ -3,6 +3,7 @@ set -e
 
 # Set environment
 MESSAGE="${MESSAGE:-$1}"
+HOSTNAME=$(hostname | awk '{print toupper($0)}')
 
 # Exit with error if required variables not provided
 if [ -z "${MAILGUN_DOMAIN}" ]; then
@@ -23,7 +24,7 @@ if [ -z "${MESSAGE}" ]; then
 fi
 
 # Set the from address if not specified
-MAILGUN_FROM="${MAILGUN_FROM:-`hostname | awk '{print toupper($0)}'`@$MAILGUN_DOMAIN}"
+MAILGUN_FROM="${MAILGUN_FROM:-$HOSTNAME@$MAILGUN_DOMAIN}"
 
 # Send the associated file attachment if present
 if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then

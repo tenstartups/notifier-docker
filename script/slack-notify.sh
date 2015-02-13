@@ -4,7 +4,8 @@ set -e
 # Set environment
 MESSAGE="${MESSAGE:-$1}"
 ICON_EMOJI="${ICON_EMOJI:-''}"
-USERNAME="${USERNAME}:-`hostname | awk '{print toupper($0)}'`"
+HOSTNAME=$(hostname | awk '{print toupper($0)}')
+USERNAME="${USERNAME:-$HOSTNAME}"
 ATTACHMENT_MIME_TYPE="${ATTACHMENT_MIME_TYPE:-text/plain}"
 
 # Exit with error if required variables not provided
