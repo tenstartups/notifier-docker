@@ -3,7 +3,6 @@ set -e
 
 # Set environment
 MESSAGE="${MESSAGE:-$1}"
-SENDER="${SENDER:-`hostname | tr '[:lower:]' '[:upper:]'`}"
 EMOJI_ICON="${EMOJI_ICON:-''}"
 HOSTNAME="$(hostname | awk '{print toupper($0)}')"
 ATTACHMENT_MIME_TYPE="${ATTACHMENT_MIME_TYPE:-text/plain}"
@@ -21,10 +20,10 @@ fi
 # Build the message with or without attachment
 if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
   printf "Sending slack channel message with file ${FILE_ATTACHMENT}... "
-  PAYLOAD="{\"username\": \"${SENDER}\", \"icon_emoji\": \"${EMOJI_ICON}\", \"text\": \"${MESSAGE}\"}"
+  PAYLOAD="{\"username\": \"${HOSTNAME}\", \"icon_emoji\": \"${EMOJI_ICON}\", \"text\": \"${MESSAGE}\"}"
 else
   printf "Sending slack channel message... "
-  PAYLOAD="{\"username\": \"${SENDER}\", \"icon_emoji\": \"${EMOJI_ICON}\", \"text\": \"${MESSAGE}\"}"
+  PAYLOAD="{\"username\": \"${HOSTNAME}\", \"icon_emoji\": \"${EMOJI_ICON}\", \"text\": \"${MESSAGE}\"}"
 fi
 
 # Send the message to the webhook URL
