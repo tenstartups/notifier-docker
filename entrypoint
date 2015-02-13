@@ -1,13 +1,3 @@
 #!/bin/bash
 
-# Create an ssh shim to pass options to git ssh
-cat << EOF > "${GIT_SSH}"
-#!/bin/bash +x
-ssh ${GIT_SSH_OPTIONS} \$*
-EOF
-chmod +x "${GIT_SSH}"
-
-# Run the docker daemon in a spawned shell
-/usr/local/bin/wrap-docker &
-
-exec $@
+exec "$@"
