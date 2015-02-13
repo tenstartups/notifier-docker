@@ -27,7 +27,7 @@ else
 fi
 
 # Send the message to the webhook URL
-curl \
+curl -s \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -X POST \
   -d "payload=${PAYLOAD}" \
