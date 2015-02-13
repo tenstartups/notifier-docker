@@ -3,7 +3,6 @@ set -e
 
 # Set environment
 MESSAGE="${MESSAGE:-$1}"
-HOSTNAME="$(hostname | awk '{print toupper($0)}')"
 
 # Exit with error if required variables not provided
 if [ -z "${MAILGUN_DOMAIN}" ]; then
@@ -12,10 +11,6 @@ if [ -z "${MAILGUN_DOMAIN}" ]; then
 fi
 if [ -z "${MAILGUN_API_KEY}" ]; then
   echo "Envrionment variable MAILGUN_API_KEY must be set"
-  exit 1
-fi
-if [ -z "${MAILGUN_FROM}" ]; then
-  echo "Envrionment variable MAILGUN_FROM must be set"
   exit 1
 fi
 if [ -z "${MAILGUN_TO}" ]; then
@@ -27,6 +22,9 @@ if [ -z "${MESSAGE}" ]; then
   exit 1
 fi
 
+# Set the from address if not specified
+MAILGUN_FROM="${MAILGUN_FROM:-`hostname | awk '{print toupper($0)}'`@$MAILGUN_DOMAIN}"
+
 # Send the associated file attachment if present
 if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
   printf "Sending mailgun email notification with file ${FILE_ATTACHMENT}... "
@@ -34,9 +32,9 @@ if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
     "https://api.mailgun.net/v2/${MAILGUN_DOMAIN}/messages" \
     -F from="${MAILGUN_FROM}" \
     -F to="${MAILGUN_TO}" \
-    -F subject="(${HOSTNAME}) ${MESSAGE}" \
-    -F text="See attached log file for details." \
-    --form-string html="<html>See attached log file for details.</html>" \
+    -F subject="${MESSAGE}" \
+    -F text="${MESSAGE}" \
+    --form-string html="${MESSAGE}" \
     -F attachment="@${FILE_ATTACHMENT}" \
     >/dev/null
   echo "done."
@@ -46,9 +44,9 @@ else
     "https://api.mailgun.net/v2/${MAILGUN_DOMAIN}/messages" \
     -F from="${MAILGUN_FROM}" \
     -F to="${MAILGUN_TO}" \
-    -F subject="(${HOSTNAME}) ${MESSAGE}" \
-    -F text="(${HOSTNAME}) ${MESSAGE}" \
-    --form-string html="<strong><em>${HOSTNAME}</em></strong> ${MESSAGE}" \
+    -F subject="${MESSAGE}" \
+    -F text="${MESSAGE}" \
+    --form-string html="${MESSAGE}" \
     >/dev/null
   echo "done."
 fi

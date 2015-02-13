@@ -4,7 +4,6 @@ set -e
 # Set environment
 MESSAGE="${MESSAGE:-$1}"
 NOTICE_COLOR=${NOTICE_COLOR:-yellow}
-HOSTNAME="$(hostname | awk '{print toupper($0)}')"
 ATTACHMENT_MIME_TYPE="${ATTACHMENT_MIME_TYPE:-text/plain}"
 
 # Exit with error if required variables not provided
@@ -21,11 +20,6 @@ if [ -z "${MESSAGE}" ]; then
   exit 1
 fi
 
-# Add a reference to the upcoming file attachment if we have one
-if ! [ -z "${FILE_ATTACHMENT}" ] && [ -f "${FILE_ATTACHMENT}" ]; then
-  MESSAGE="${MESSAGE}<br/>Refer to the file '`basename ${FILE_ATTACHMENT}`' attached in the next message..."
-fi
-
 # Send the notification
 printf "Sending hipchat room notification... "
 curl -s \
@@ -33,8 +27,8 @@ curl -s \
   -H "Authorization: Bearer ${HIPCHAT_AUTH_TOKEN}" \
   -X POST \
   -d "color=${NOTICE_COLOR}" \
-  -d "message_format=html" \
-  -d "message=<strong><em>${HOSTNAME}</em></strong> ${MESSAGE}" \
+  -d "message_format=text" \
+  -d "message=${MESSAGE}" \
   https://api.hipchat.com/v2/room/${HIPCHAT_ROOM_ID}/notification \
   >/dev/null
 echo "done."
