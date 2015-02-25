@@ -14,13 +14,34 @@ ENV TERM xterm-color
 # Install base packages.
 RUN apt-get update
 RUN apt-get -y install \
+  build-essential \
   curl \
   daemontools \
+  libcurl4-openssl-dev \
+  libssl-dev \
+  libyaml-dev \
   nano \
-  wget
+  wget \
+  zlib1g-dev
+
+# Compile ruby from source.
+RUN \
+  cd /tmp && \
+  wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.0.tar.gz && \
+  tar -xzvf ruby-*.tar.gz && \
+  rm -f ruby-*.tar.gz && \
+  cd ruby-* && \
+  ./configure --enable-shared --disable-install-doc && \
+  make && \
+  make install && \
+  cd .. && \
+  rm -rf ruby-*
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install ruby gems.
+RUN gem install awesome_print hipchat rest-client slack-notifier --no-ri --no-rdoc
 
 # Set the working directory.
 WORKDIR /opt/notifier
