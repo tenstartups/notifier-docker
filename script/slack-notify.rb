@@ -2,57 +2,38 @@
 
 require 'awesome_print'
 require 'json'
-require 'rest_client'
+require 'slack-notifier'
 
-api_token='9a57e098b87b71aa50f30efb1e4eb20c75c8425f1ce989e1c64ab7a83777e99c'
+# Set environment
+webhook_url = ENV['SLACK_WEBHOOK_URL']
+username = ENV['USERNAME'] || `hostname`.strip
+message = ENV['MESSAGE'] || ARGV[0]
+emoji = ENV['ICON_EMOJI'] || ''
+attachment = ENV['FILE_ATTACHMENT']
 
-payload = {}
+# Exit with error if required variables not provided
+puts "SLACK_WEBHOOK_URL envrionment variable must be set" and exit 1 unless webhook_url
+puts "MESSAGE envrionment variable must be set or passed as first argument" and exit 1 unless message
+puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable" and exit 1 unless attachment.nil? || File.exists?(attachment)
 
+# Initialize parameters
+params = { icon_emoji: emoji }
+
+# Add attachments
+if attachment.nil?
+  printf "Sending notification to slack channel... "
+else
+  printf "Sending notification to slack channel with file attachment... "
+  params.merge!(attachments: [ text: File.open(attachment, 'r') {|f| f.read} ])
+end
+
+# Send to Slack
 begin
-  response = RestClient.get(
-    "https://api.digitalocean.com/v2/account/keys",
-    'Authorization' => "Bearer #{api_token}",
-    :content_type => :json,
-    :accept => :json
-  )
-  ap JSON.parse(response.to_str)
+  notifier=Slack::Notifier.new(webhook_url, username: username)
+  notifier.ping(message, params)
+  puts "done."
 rescue => e
-  raise unless e.respond_to?(:response)
-  ap JSON.parse(e.response.to_str)
+  puts "failed."
+  ap e
   raise
 end
-
-
-
-# Send to slack if enabled
-if defined?(Slack) && (webhook_url=ENV['SLACK_EVENTS_URL']).present?
-  emoji = case opts[:severity].to_sym
-    when :debug
-      ':purple_heart:'
-    when :info
-      ':green_heart:'
-    when :warn
-      ':yellow_heart:'
-    when :error
-      ':broken_heart:'
-  end
-  message="@everyone #{message}" if opts[:notify_all]
-  notifier=Slack::Notifier.new(webhook_url, username: Settings.app_name)
-  notifier.ping(message, icon_emoji: emoji)
-end
-
-# Send to HipChat if enabled
-if defined?(HipChat) && (token=ENV['HIPCHAT_AUTH_TOKEN']).present? && (room=ENV['HIPCHAT_EVENTS_ROOM']).present?
-  color = case opts[:severity].to_sym
-    when :debug
-      :purple
-    when :info
-      :green
-    when :warn
-      :yellow
-    when :error
-      :red
-  end
-  message="@all #{message}" if opts[:notify_all]
-  client=HipChat::Client.new(token)
-  client[room].send(ENV['HIPCHAT_EVENTS_FROM'] || Settings.app_name.slice(1..15), message, message_format: 'text', color: color)

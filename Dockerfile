@@ -49,8 +49,7 @@ WORKDIR /opt/notifier
 # Add files to the container.
 ADD . /opt/notifier
 RUN \
-  find ./script -iname '*.rb' -exec bash -c 'mv -v "{}" "/usr/local/bin"' \; && \
-  find ./script -iname '*.sh' -exec bash -c 'mv -v "{}" "$(echo {} | sed -En ''s/\.\\/script\\/\(.*\)\.sh/\\/usr\\/local\\/bin\\/\\1/p'')"' \; && \
+  find ./script -iname '*.rb' -exec bash -c 'mv -v "{}" "$(echo {} | sed -En ''s/\.\\/script\\/\(.*\)\.rb/\\/usr\\/local\\/bin\\/\\1/p'')"' \; && \
   rm -rf ./script
 
 # Define volumes.
