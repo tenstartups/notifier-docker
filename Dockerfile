@@ -16,7 +16,6 @@ RUN apt-get update
 RUN apt-get -y install \
   build-essential \
   curl \
-  daemontools \
   libcurl4-openssl-dev \
   libssl-dev \
   libyaml-dev \
@@ -52,11 +51,8 @@ RUN \
   find ./script -iname '*.rb' -exec bash -c 'mv -v "{}" "$(echo {} | sed -En ''s/\.\\/script\\/\(.*\)\.rb/\\/usr\\/local\\/bin\\/\\1/p'')"' \; && \
   rm -rf ./script
 
-# Define volumes.
-VOLUME ["/etc/notifier/env"]
-
 # Define entrypoint script.
 ENTRYPOINT ["./entrypoint"]
 
 # Define default command.
-CMD ["/usr/bin/envdir", "/etc/notifier/env", "/usr/local/bin/notify"]
+CMD ["/usr/local/bin/notify"]
