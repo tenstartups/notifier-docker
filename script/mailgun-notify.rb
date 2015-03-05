@@ -13,11 +13,26 @@ message = ENV['MESSAGE'] || ARGV[0]
 attachment = ENV['FILE_ATTACHMENT']
 
 # Exit with error if required variables not provided
-puts "Envrionment variable MAILGUN_API_KEY must be set" and exit 1 unless api_key
-puts "Envrionment variable MAILGUN_DOMAIN must be set" and exit 1 unless domain
-puts "Envrionment variable MAILGUN_TO must be set" and exit 1 unless recipient
-puts "Envrionment variable MESSAGE must be set or passed as first argument" and exit 1 unless message
-puts "Unable to find specified file attachment" and exit 1 unless attachment.nil? || File.exists?(attachment)
+if api_key.nil?
+  puts "Envrionment variable MAILGUN_API_KEY must be set"
+  exit 1
+end
+if domain.nil?
+  puts "Envrionment variable MAILGUN_DOMAIN must be set"
+  exit 1
+end
+if recipient.nil?
+  puts "Envrionment variable MAILGUN_TO must be set"
+  exit 1
+end
+if message.nil?
+  puts "Envrionment variable MESSAGE must be set or passed as first argument"
+  exit 1
+end
+unless attachment.nil? || File.exists?(attachment)
+  puts "Unable to find specified file attachment"
+  exit 1
+end
 
 # Initialize parameters
 params = {

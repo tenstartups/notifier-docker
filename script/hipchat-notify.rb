@@ -13,10 +13,22 @@ color = ENV['NOTICE_COLOR'] || ''
 attachment = ENV['FILE_ATTACHMENT']
 
 # Exit with error if required variables not provided
-puts "HIPCHAT_AUTH_TOKEN envrionment variable must be set" and exit 1 unless token
-puts "HIPCHAT_ROOM envrionment variable must be set" and exit 1 unless room
-puts "MESSAGE envrionment variable must be set or passed as first argument" and exit 1 unless message
-puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable" and exit 1 unless attachment.nil? || File.exists?(attachment)
+if token.nil?
+  puts "HIPCHAT_AUTH_TOKEN envrionment variable must be set"
+  exit 1
+end
+if room.nil?
+  puts "HIPCHAT_ROOM envrionment variable must be set"
+  exit 1
+end
+if message.nil?
+  puts "MESSAGE envrionment variable must be set or passed as first argument"
+  exit 1
+end
+unless attachment.nil? || File.exists?(attachment)
+  puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable"
+  exit 1
+end
 
 # Initialize parameters
 params = { message_format: 'text', color: color }

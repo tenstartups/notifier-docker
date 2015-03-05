@@ -12,9 +12,18 @@ emoji = ENV['ICON_EMOJI'] || ''
 attachment = ENV['FILE_ATTACHMENT']
 
 # Exit with error if required variables not provided
-puts "SLACK_WEBHOOK_URL envrionment variable must be set" and exit 1 unless webhook_url
-puts "MESSAGE envrionment variable must be set or passed as first argument" and exit 1 unless message
-puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable" and exit 1 unless attachment.nil? || File.exists?(attachment)
+if webhook_url.nil?
+  puts "SLACK_WEBHOOK_URL envrionment variable must be set"
+  exit 1
+end
+if message.nil?
+  puts "MESSAGE envrionment variable must be set or passed as first argument"
+  exit 1
+end
+unless attachment.nil? || File.exists?(attachment)
+  puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable"
+  exit 1
+end
 
 # Initialize parameters
 params = { icon_emoji: emoji }
