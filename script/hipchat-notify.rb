@@ -31,7 +31,7 @@ if token.nil? || token == ''
   puts "HIPCHAT_AUTH_TOKEN envrionment variable must be set"
   exit 1
 end
-if room.nil? || rooom == ''
+if room.nil? || room == ''
   puts "HIPCHAT_ROOM envrionment variable must be set"
   exit 1
 end
