@@ -5,12 +5,26 @@ require 'json'
 require 'hipchat'
 
 # Set environment
-token=ENV['HIPCHAT_AUTH_TOKEN']
+token = ENV['HIPCHAT_AUTH_TOKEN']
 room = ENV['HIPCHAT_ROOM']
 from = (ENV['HIPCHAT_FROM'] || `hostname`.strip.upcase).slice(0..14)
 message = ENV['MESSAGE'] || ARGV[0]
-color = ENV['NOTICE_COLOR'] || ''
 attachment = ENV['FILE_ATTACHMENT']
+severity = ENV['MSG_SEVERITY'] || ARGV[1]
+
+# Convert severity to a notice color
+color = case severity
+        when 'info'
+          'gray'
+        when 'success'
+          'green'
+        when 'warn'
+          'yellow'
+        when 'error'
+          'red'
+        else
+          'purple'
+        end
 
 # Exit with error if required variables not provided
 if token.nil?

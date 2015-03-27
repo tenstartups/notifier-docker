@@ -8,8 +8,22 @@ require 'slack-notifier'
 webhook_url = ENV['SLACK_WEBHOOK_URL']
 username = ENV['USERNAME'] || `hostname`.strip
 message = ENV['MESSAGE'] || ARGV[0]
-emoji = ENV['ICON_EMOJI'] || ''
 attachment = ENV['FILE_ATTACHMENT']
+severity = ENV['MSG_SEVERITY'] || ARGV[1]
+
+# Convert severity to a notice color
+emoji = case severity
+        when 'info'
+          ':blue_heart:'
+        when 'success'
+          ':green_heart:'
+        when 'warn'
+          ':yellow_heart:'
+        when 'error'
+          ':broken_heart:'
+        else
+          ':purple_heart:'
+        end
 
 # Exit with error if required variables not provided
 if webhook_url.nil?

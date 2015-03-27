@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # Extract environment variables
-services = ENV['NOTIFIER_SERVICES'].split(',').map(&:strip).map(&:downcase) || []
+services = (ENV['NOTIFIER_SERVICES'] || '').split(',').map(&:strip).map(&:downcase) || []
 
 # Exit with error if required variables not provided
 unless services.size > 0
