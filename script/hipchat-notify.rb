@@ -8,7 +8,7 @@ require 'hipchat'
 token = ENV['HIPCHAT_AUTH_TOKEN']
 room = ENV['HIPCHAT_ROOM']
 from = (ENV['HIPCHAT_FROM'] || `hostname`.strip.upcase).slice(0..14)
-message = ENV['MESSAGE'] || ARGV[0]
+message = ARGV[0] || ENV['MESSAGE']
 attachment = ENV['FILE_ATTACHMENT']
 severity = ENV['MSG_SEVERITY'] || ARGV[1]
 
@@ -27,19 +27,19 @@ color = case severity
         end
 
 # Exit with error if required variables not provided
-if token.nil?
+if token.nil? || token == ''
   puts "HIPCHAT_AUTH_TOKEN envrionment variable must be set"
   exit 1
 end
-if room.nil?
+if room.nil? || rooom == ''
   puts "HIPCHAT_ROOM envrionment variable must be set"
   exit 1
 end
-if message.nil?
+if message.nil? || message == ''
   puts "MESSAGE envrionment variable must be set or passed as first argument"
   exit 1
 end
-unless attachment.nil? || File.exists?(attachment)
+unless attachment.nil? || attachment == '' || File.exists?(attachment)
   puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable"
   exit 1
 end
@@ -48,7 +48,7 @@ end
 params = { message_format: 'text', color: color }
 
 # Add attachments
-if attachment.nil?
+if attachment.nil? || attachment == ''
   printf "Sending notification to hipchat room... "
 else
   printf "Sending notification to hipchat room with file attachment... "

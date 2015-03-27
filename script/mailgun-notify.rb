@@ -9,27 +9,27 @@ api_key = ENV['MAILGUN_API_KEY']
 domain = ENV['MAILGUN_DOMAIN']
 sender = ENV['MAILGUN_FROM'] || "#{`hostname`.strip}@#{domain}"
 recipient = ENV['MAILGUN_TO']
-message = ENV['MESSAGE'] || ARGV[0]
+message = ARGV[0] || ENV['MESSAGE']
 attachment = ENV['FILE_ATTACHMENT']
 
 # Exit with error if required variables not provided
-if api_key.nil?
+if api_key.nil? || api_key == ''
   puts "Envrionment variable MAILGUN_API_KEY must be set"
   exit 1
 end
-if domain.nil?
+if domain.nil? || domain == ''
   puts "Envrionment variable MAILGUN_DOMAIN must be set"
   exit 1
 end
-if recipient.nil?
+if recipient.nil? || recipient == ''
   puts "Envrionment variable MAILGUN_TO must be set"
   exit 1
 end
-if message.nil?
+if message.nil? || message == ''
   puts "Envrionment variable MESSAGE must be set or passed as first argument"
   exit 1
 end
-unless attachment.nil? || File.exists?(attachment)
+unless attachment.nil? || attachment == '' || File.exists?(attachment)
   puts "Unable to find specified file attachment"
   exit 1
 end
@@ -44,7 +44,7 @@ params = {
 }
 
 # Add attachments
-if attachment.nil?
+if attachment.nil? || attachment == ''
   printf "Sending notification to mailgun email... "
 else
   printf "Sending notification to mailgun email with file attachment... "

@@ -7,7 +7,7 @@ require 'slack-notifier'
 # Set environment
 webhook_url = ENV['SLACK_WEBHOOK_URL']
 username = ENV['USERNAME'] || `hostname`.strip
-message = ENV['MESSAGE'] || ARGV[0]
+message = ARGV[0] || ENV['MESSAGE']
 attachment = ENV['FILE_ATTACHMENT']
 severity = ENV['MSG_SEVERITY'] || ARGV[1]
 
@@ -26,15 +26,15 @@ emoji = case severity
         end
 
 # Exit with error if required variables not provided
-if webhook_url.nil?
+if webhook_url.nil? || webhook_url == ''
   puts "SLACK_WEBHOOK_URL envrionment variable must be set"
   exit 1
 end
-if message.nil?
+if message.nil? || message == ''
   puts "MESSAGE envrionment variable must be set or passed as first argument"
   exit 1
 end
-unless attachment.nil? || File.exists?(attachment)
+unless attachment.nil? || attachment == '' || File.exists?(attachment)
   puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable"
   exit 1
 end
@@ -43,7 +43,7 @@ end
 params = { icon_emoji: emoji }
 
 # Add attachments
-if attachment.nil?
+if attachment.nil? || attachment == ''
   printf "Sending notification to slack channel... "
 else
   printf "Sending notification to slack channel with file attachment... "
