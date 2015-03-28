@@ -10,6 +10,7 @@ username = ENV['USERNAME'] || `hostname`.strip
 message = ARGV[0] || ENV['MESSAGE']
 attachment = ENV['FILE_ATTACHMENT']
 severity = ENV['MSG_SEVERITY'] || ARGV[1]
+username = "#{username} (#{severity})" unless severity.nil? || severity == ''
 
 # Convert severity to a notice color
 emoji = case severity
