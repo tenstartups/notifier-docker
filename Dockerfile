@@ -28,10 +28,10 @@ RUN gem install awesome_print rest-client slack-notifier --no-ri --no-rdoc
 RUN gem install hipchat --version='1.4.0' --no-ri --no-rdoc
 
 # Set the working directory.
-WORKDIR /opt/notifier
+WORKDIR /home/notifier
 
 # Add files to the container.
-ADD . /opt/notifier
+ADD . /home/notifier
 
 # Copy scripts and configuration into place.
 RUN \
