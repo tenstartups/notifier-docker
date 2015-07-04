@@ -4,7 +4,7 @@
 # http://github.com/tenstartups/notifier-docker
 #
 
-FROM ruby:slim
+FROM brigand/ruby
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
@@ -13,15 +13,8 @@ ENV \
   DEBIAN_FRONTEND=noninteractive \
   TERM=xterm-color
 
-# Install base packages.
-RUN apt-get update && apt-get -y install \
-  build-essential \
-  curl \
-  nano \
-  wget
-
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Install packages.
+RUN apk --update add build-base ruby-dev bash curl nano wget
 
 # Install ruby gems.
 RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
@@ -34,7 +27,8 @@ ADD . /home/notifier
 
 # Copy scripts and configuration into place.
 RUN \
-  find ./script -regextype posix-extended -regex '^.+\.(rb|sh)\s*$' -exec bash -c 'f=`basename "{}"`; mv -v "{}" "/usr/local/bin/${f%.*}"' \; && \
+  find ./script -type f -name '*.sh' | while read f; do echo 'n' | cp -iv "$f" "/usr/local/bin/`basename ${f%.sh}`" 2>/dev/null; done && \
+  find ./script -type f -name '*.rb' | while read f; do echo 'n' | cp -iv "$f" "/usr/local/bin/`basename ${f%.rb}`" 2>/dev/null; done && \
   rm -rf ./script
 
 # Define entrypoint script.
