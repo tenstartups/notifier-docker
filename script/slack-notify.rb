@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'awesome_print'
+require 'colorize'
 require 'json'
 require 'slack-notifier'
 
@@ -28,15 +28,15 @@ emoji = case severity
 
 # Exit with error if required variables not provided
 if webhook_url.nil? || webhook_url == ''
-  puts "SLACK_WEBHOOK_URL envrionment variable must be set"
+  STDERR.puts "SLACK_WEBHOOK_URL envrionment variable must be set".colorize(:red)
   exit 1
 end
 if message.nil? || message == ''
-  puts "MESSAGE envrionment variable must be set or passed as first argument"
+  STDERR.puts "MESSAGE envrionment variable must be set or passed as first argument".colorize(:red)
   exit 1
 end
 unless attachment.nil? || attachment == '' || File.exists?(attachment)
-  puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable"
+  STDERR.puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable".colorize(:red)
   exit 1
 end
 
@@ -57,7 +57,7 @@ begin
   notifier.ping(message, params)
   puts "done."
 rescue => e
-  puts "failed."
+  STDERR.puts "failed.".colorize(:red)
   ap e
   raise
 end

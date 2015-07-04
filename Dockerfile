@@ -24,8 +24,7 @@ RUN apt-get update && apt-get -y install \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install ruby gems.
-RUN gem install awesome_print rest-client slack-notifier --no-ri --no-rdoc
-RUN gem install hipchat --version='1.4.0' --no-ri --no-rdoc
+RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
 
 # Set the working directory.
 WORKDIR /home/notifier

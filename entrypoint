@@ -1,3 +1,6 @@
 #!/bin/bash
 
-exec "$@"
+case "$1" in
+  notify | info | warn | error | success ) "$@" ;;
+  *                                      ) notify "$@" ;;
+esac

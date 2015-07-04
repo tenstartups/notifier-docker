@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'awesome_print'
+require 'colorize'
 require 'json'
 require 'rest_client'
 
@@ -30,7 +30,7 @@ if message.nil? || message == ''
   exit 1
 end
 unless attachment.nil? || attachment == '' || File.exists?(attachment)
-  puts "Unable to find specified file attachment"
+  puts "Unable to find specified file attachment".colorize(:red)
   exit 1
 end
 
@@ -56,7 +56,7 @@ begin
   response = RestClient.post("https://#{api_key}@api.mailgun.net/v2/#{domain}/messages", params)
   puts "done."
 rescue => e
-  puts "failed."
+  puts "failed.".colorize(:red)
   ap e
   raise
 end
