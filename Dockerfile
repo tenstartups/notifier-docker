@@ -10,7 +10,6 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
 # Set environment variables.
 ENV \
-  DEBIAN_FRONTEND=noninteractive \
   TERM=xterm-color
 
 # Install packages.
