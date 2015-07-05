@@ -4,16 +4,9 @@
 # http://github.com/tenstartups/notifier-docker
 #
 
-FROM brigand/ruby
+FROM tenstartups/alpine-ruby
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
-
-# Set environment variables.
-ENV \
-  TERM=xterm-color
-
-# Install packages.
-RUN apk --update add build-base ruby-dev bash curl nano wget
 
 # Install ruby gems.
 RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
