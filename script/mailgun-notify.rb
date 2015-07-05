@@ -14,23 +14,23 @@ attachment = ENV['FILE_ATTACHMENT']
 
 # Exit with error if required variables not provided
 if api_key.nil? || api_key == ''
-  puts "Envrionment variable MAILGUN_API_KEY must be set"
+  STDERR.puts "Envrionment variable MAILGUN_API_KEY must be set"
   exit 1
 end
 if domain.nil? || domain == ''
-  puts "Envrionment variable MAILGUN_DOMAIN must be set"
+  STDERR.puts "Envrionment variable MAILGUN_DOMAIN must be set"
   exit 1
 end
 if recipient.nil? || recipient == ''
-  puts "Envrionment variable MAILGUN_TO must be set"
+  STDERR.puts "Envrionment variable MAILGUN_TO must be set"
   exit 1
 end
 if message.nil? || message == ''
-  puts "Envrionment variable MESSAGE must be set or passed as first argument"
+  STDERR.puts "Envrionment variable MESSAGE must be set or passed as first argument"
   exit 1
 end
 unless attachment.nil? || attachment == '' || File.exists?(attachment)
-  puts "Unable to find specified file attachment".colorize(:red)
+  STDERR.puts "Unable to find specified file attachment".colorize(:red)
   exit 1
 end
 
@@ -56,7 +56,7 @@ begin
   response = RestClient.post("https://#{api_key}@api.mailgun.net/v2/#{domain}/messages", params)
   puts "done."
 rescue => e
-  puts "failed.".colorize(:red)
-  ap e
-  raise
+  STDERR.puts "failed.".colorize(:red)
+  STDERR.puts e.message
+  fail
 end

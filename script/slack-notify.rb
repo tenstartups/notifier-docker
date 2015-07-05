@@ -58,6 +58,6 @@ begin
   puts "done."
 rescue => e
   STDERR.puts "failed.".colorize(:red)
-  ap e
-  raise
+  STDERR.puts e.message
+  fail
 end
