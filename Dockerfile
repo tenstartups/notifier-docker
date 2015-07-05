@@ -26,8 +26,8 @@ ADD . /home/notifier
 
 # Copy scripts and configuration into place.
 RUN \
-  find ./script -type f -name '*.sh' | while read f; do echo 'n' | cp -i "$f" "/usr/local/bin/`basename ${f%.sh}`" 2>/dev/null; done && \
-  find ./script -type f -name '*.rb' | while read f; do echo 'n' | cp -i "$f" "/usr/local/bin/`basename ${f%.rb}`" 2>/dev/null; done && \
+  find ./script -type f -name '*.sh' | while read f; do echo "$f -> /usr/local/bin/`basename ${f%.sh}`"; cp "$f" "/usr/local/bin/`basename ${f%.sh}`"; done && \
+  find ./script -type f -name '*.rb' | while read f; do echo "$f -> /usr/local/bin/`basename ${f%.rb}`"; cp "$f" "/usr/local/bin/`basename ${f%.rb}`"; done && \
   rm -rf ./script
 
 # Define entrypoint script.
