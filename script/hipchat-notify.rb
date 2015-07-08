@@ -8,9 +8,9 @@ require 'hipchat'
 token = ENV['HIPCHAT_AUTH_TOKEN']
 room = ENV['HIPCHAT_ROOM']
 from = (ENV['HIPCHAT_FROM'] || `hostname`.strip.upcase).slice(0..14)
-message = ARGV[0] || ENV['MESSAGE']
-attachment = ENV['FILE_ATTACHMENT']
-severity = ENV['MSG_SEVERITY'] || ARGV[1]
+message = ARGV[0] || ENV['NOTIFIER_MESSAGE'] || ENV['MESSAGE']
+attachment = ENV['NOTIFIER_FILE_ATTACHMENT'] || ENV['FILE_ATTACHMENT']
+severity = ARGV[1] || ENV['NOTIFIER_SEVERITY'] || ENV['MSG_SEVERITY']
 
 # Convert severity to a notice color
 color = case severity
@@ -36,11 +36,11 @@ if room.nil? || room == ''
   exit 1
 end
 if message.nil? || message == ''
-  STDERR.puts "MESSAGE envrionment variable must be set or passed as first argument".colorize(:red)
+  STDERR.puts "NOTIFER_MESSAGE envrionment variable must be set or passed as first argument".colorize(:red)
   exit 1
 end
 unless attachment.nil? || attachment == '' || File.exists?(attachment)
-  STDERR.puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable".colorize(:red)
+  STDERR.puts "Unable to find file attachment specified in NOTIFIER_FILE_ATTACHMENT environment variable".colorize(:red)
   exit 1
 end
 

@@ -5,38 +5,38 @@ require 'json'
 require 'slack-notifier'
 
 # Set environment
-webhook_url = ENV['SLACK_WEBHOOK_URL']
-username = ENV['USERNAME'] || `hostname`.strip
-message = ARGV[0] || ENV['MESSAGE']
-attachment = ENV['FILE_ATTACHMENT']
-severity = ENV['MSG_SEVERITY'] || ARGV[1]
-username = "#{username} (#{severity})" unless severity.nil? || severity == ''
+webhook_url = ENV['NOTIFIER_SLACK_WEBHOOK_URL'] || ENV['SLACK_WEBHOOK_URL']
+sender = ENV['NOTIFIER_SENDER'] || ENV['USERNAME'] || `hostname`.strip
+message = ARGV[0] || ENV['NOTIFIER_MESSAGE'] || ENV['MESSAGE']
+attachment = ENV['NOTIFIER_FILE_ATTACHMENT'] || ENV['FILE_ATTACHMENT']
+severity = ARGV[1] || ENV['NOTIFIER_SEVERITY'] || ENV['MSG_SEVERITY']
+sender = "#{sender} (#{severity})" unless severity.nil? || severity == ''
 
 # Convert severity to a notice color
 emoji = case severity
         when 'info'
-          ':blue_heart:'
+          "${NOTIFIER_SLACK_INFO_EMOJI:-:blue_heart:}"
         when 'success'
-          ':green_heart:'
-        when 'warn'
-          ':yellow_heart:'
-        when 'error'
-          ':broken_heart:'
+          "${NOTIFIER_SLACK_SUCCESS_EMOJI:-:green_heart:}"
+        when 'warn', 'warning'
+          "${NOTIFIER_SLACK_WARN_EMOJI:-:yellow_heart:}"
+        when 'error', 'failure'
+          "${NOTIFIER_SLACK_ERROR_EMOJI:-:broken_heart:}"
         else
-          ':purple_heart:'
+          "${NOTIFIER_SLACK_DEFAULT_EMOJI:-:purple_heart:}"
         end
 
 # Exit with error if required variables not provided
 if webhook_url.nil? || webhook_url == ''
-  STDERR.puts "SLACK_WEBHOOK_URL envrionment variable must be set".colorize(:red)
+  STDERR.puts "NOTIFIER_SLACK_WEBHOOK_URL envrionment variable must be set".colorize(:red)
   exit 1
 end
 if message.nil? || message == ''
-  STDERR.puts "MESSAGE envrionment variable must be set or passed as first argument".colorize(:red)
+  STDERR.puts "NOTIFIER_MESSAGE envrionment variable must be set or passed as first argument".colorize(:red)
   exit 1
 end
 unless attachment.nil? || attachment == '' || File.exists?(attachment)
-  STDERR.puts "Unable to find file attachment specified in FILE_ATTACHMENT environment variable".colorize(:red)
+  STDERR.puts "Unable to find file attachment specified in NOTIFIER_FILE_ATTACHMENT environment variable".colorize(:red)
   exit 1
 end
 
@@ -53,7 +53,7 @@ end
 
 # Send to Slack
 begin
-  notifier=Slack::Notifier.new(webhook_url, username: username)
+  notifier=Slack::Notifier.new(webhook_url, username: sender)
   notifier.ping(message, params)
   puts "done."
 rescue => e

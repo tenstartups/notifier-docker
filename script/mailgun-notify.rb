@@ -9,7 +9,7 @@ api_key = ENV['MAILGUN_API_KEY']
 domain = ENV['MAILGUN_DOMAIN']
 sender = ENV['MAILGUN_FROM'] || "#{`hostname`.strip}@#{domain}"
 recipient = ENV['MAILGUN_TO']
-message = ARGV[0] || ENV['MESSAGE']
+message = ARGV[0] || ENV['NOTIFIER_MESSAGE'] || ENV['MESSAGE']
 attachment = ENV['FILE_ATTACHMENT']
 
 # Exit with error if required variables not provided
@@ -26,7 +26,7 @@ if recipient.nil? || recipient == ''
   exit 1
 end
 if message.nil? || message == ''
-  STDERR.puts "Envrionment variable MESSAGE must be set or passed as first argument"
+  STDERR.puts "Envrionment variable NOTIFIER_MESSAGE must be set or passed as first argument"
   exit 1
 end
 unless attachment.nil? || attachment == '' || File.exists?(attachment)
