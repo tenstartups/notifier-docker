@@ -15,15 +15,15 @@ sender = "#{sender} (#{severity})" unless severity.nil? || severity == ''
 # Convert severity to a notice color
 emoji = case severity
         when 'info'
-          "${NOTIFIER_SLACK_INFO_EMOJI:-:blue_heart:}"
+          ENV['NOTIFIER_SLACK_INFO_EMOJI'] || ':blue_heart:'
         when 'success'
-          "${NOTIFIER_SLACK_SUCCESS_EMOJI:-:green_heart:}"
+          ENV['NOTIFIER_SLACK_SUCCESS_EMOJI'] || ':green_heart:'
         when 'warn', 'warning'
-          "${NOTIFIER_SLACK_WARN_EMOJI:-:yellow_heart:}"
+          ENV['NOTIFIER_SLACK_WARN_EMOJI'] || ':yellow_heart:'
         when 'error', 'failure'
-          "${NOTIFIER_SLACK_ERROR_EMOJI:-:broken_heart:}"
+          ENV['NOTIFIER_SLACK_ERROR_EMOJI'] || ':broken_heart:'
         else
-          "${NOTIFIER_SLACK_DEFAULT_EMOJI:-:purple_heart:}"
+          ENV['NOTIFIER_SLACK_DEFAULT_EMOJI'] || ':purple_heart:'
         end
 
 # Exit with error if required variables not provided
