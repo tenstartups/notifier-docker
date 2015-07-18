@@ -15,16 +15,17 @@ RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
 WORKDIR /home/notifier
 
 # Add files to the container.
-ADD . /home/notifier
+COPY entrypoint.sh /entrypoint
+ADD script /tmp/script
 
 # Copy scripts and configuration into place.
 RUN \
-  find ./script -type f -name '*.sh' | while read f; do echo "'$f' -> '/usr/local/bin/`basename ${f%.sh}`'"; cp "$f" "/usr/local/bin/`basename ${f%.sh}`"; done && \
-  find ./script -type f -name '*.rb' | while read f; do echo "'$f' -> '/usr/local/bin/`basename ${f%.rb}`'"; cp "$f" "/usr/local/bin/`basename ${f%.rb}`"; done && \
-  rm -rf ./script
+  find /tmp/script -type f -name '*.sh' | while read f; do cp -v "$f" "/usr/local/bin/`basename ${f%.sh}`"; done && \
+  find /tmp/script -type f -name '*.rb' | while read f; do cp -v "$f" "/usr/local/bin/`basename ${f%.rb}`"; done && \
+  rm -rf /tmp/script
 
 # Define entrypoint script.
-ENTRYPOINT ["./entrypoint"]
+ENTRYPOINT ["/entrypoint"]
 
 # Define default command.
 CMD ["/usr/local/bin/notify"]
