@@ -6,7 +6,7 @@ require 'slack-notifier'
 
 # Set environment
 webhook_url = ENV['NOTIFIER_SLACK_WEBHOOK_URL'] || ENV['SLACK_WEBHOOK_URL']
-sender = ENV['NOTIFIER_SENDER'] || ENV['USERNAME'] || `hostname`.strip
+sender = ENV['NOTIFIER_SENDER'] || ENV['USERNAME'] || ENV['HOSTNAME'].split('.').first
 message = ARGV[0] || ENV['NOTIFIER_MESSAGE'] || ENV['MESSAGE']
 attachment = ENV['NOTIFIER_FILE_ATTACHMENT'] || ENV['FILE_ATTACHMENT']
 severity = ARGV[1] || ENV['NOTIFIER_SEVERITY'] || ENV['MSG_SEVERITY']
@@ -28,15 +28,15 @@ emoji = case severity
 
 # Exit with error if required variables not provided
 if webhook_url.nil? || webhook_url == ''
-  STDERR.puts "NOTIFIER_SLACK_WEBHOOK_URL envrionment variable must be set".colorize(:red)
+  STDERR.puts 'NOTIFIER_SLACK_WEBHOOK_URL envrionment variable must be set'.colorize(:red)
   exit 1
 end
 if message.nil? || message == ''
-  STDERR.puts "NOTIFIER_MESSAGE envrionment variable must be set or passed as first argument".colorize(:red)
+  STDERR.puts 'NOTIFIER_MESSAGE envrionment variable must be set or passed as first argument'.colorize(:red)
   exit 1
 end
-unless attachment.nil? || attachment == '' || File.exists?(attachment)
-  STDERR.puts "Unable to find file attachment specified in NOTIFIER_FILE_ATTACHMENT environment variable".colorize(:red)
+unless attachment.nil? || attachment == '' || File.exist?(attachment)
+  STDERR.puts 'Unable to find file attachment specified in NOTIFIER_FILE_ATTACHMENT environment variable'.colorize(:red)
   exit 1
 end
 
@@ -45,19 +45,19 @@ params = { icon_emoji: emoji }
 
 # Add attachments
 if attachment.nil? || attachment == ''
-  printf "Sending notification to slack channel... "
+  printf 'Sending notification to slack channel... '
 else
-  printf "Sending notification to slack channel with file attachment... "
-  params.merge!(attachments: [ text: File.open(attachment, 'r') {|f| f.read} ])
+  printf 'Sending notification to slack channel with file attachment... '
+  params.merge!(attachments: [text: File.open(attachment, 'r') { |f| f.read }])
 end
 
 # Send to Slack
 begin
-  notifier=Slack::Notifier.new(webhook_url, username: sender)
+  notifier = Slack::Notifier.new(webhook_url, username: sender)
   notifier.ping(message, params)
-  puts "done."
+  puts 'done.'
 rescue => e
-  STDERR.puts "failed.".colorize(:red)
+  STDERR.puts 'failed.'.colorize(:red)
   STDERR.puts e.message
-  fail
+  raise
 end

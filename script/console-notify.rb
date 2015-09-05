@@ -7,7 +7,7 @@ message = ARGV[0] || ENV['NOTIFIER_MESSAGE'] || ENV['MESSAGE']
 severity = ARGV[1] || ENV['NOTIFIER_SEVERITY'] || ENV['MSG_SEVERITY']
 
 if message.nil? || message == ''
-  STDERR.puts "Envrionment variable NOTIFIER_MESSAGE must be set or passed as first argument".colorize(:red)
+  STDERR.puts 'Envrionment variable NOTIFIER_MESSAGE must be set or passed as first argument'.colorize(:red)
   exit 1
 end
 
