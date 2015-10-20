@@ -15,7 +15,7 @@ RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
 WORKDIR /home/notifier
 
 # Add files to the container.
-COPY entrypoint.sh /entrypoint
+COPY entrypoint.sh /docker-entrypoint
 ADD script /tmp/script
 
 # Copy scripts and configuration into place.
@@ -25,7 +25,7 @@ RUN \
   rm -rf /tmp/script
 
 # Define entrypoint script.
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/docker-entrypoint"]
 
 # Define default command.
 CMD ["/usr/local/bin/notify"]
