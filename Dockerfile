@@ -11,9 +11,6 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 # Install ruby gems.
 RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
 
-# Set the working directory.
-WORKDIR /home/notifier
-
 # Add files to the container.
 COPY entrypoint.sh /docker-entrypoint
 ADD script /tmp/script
