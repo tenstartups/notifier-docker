@@ -1,0 +1,28 @@
+#
+# Notifier raspberry pi docker image
+#
+# http://github.com/tenstartups/rpi-notifier-docker
+#
+
+FROM tenstartups/rpi-alpine-ruby
+
+MAINTAINER Marc Lennox <marc.lennox@gmail.com>
+
+# Install ruby gems.
+RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
+
+# Add files to the container.
+COPY entrypoint.sh /docker-entrypoint
+ADD script /tmp/script
+
+# Copy scripts and configuration into place.
+RUN \
+  find /tmp/script -type f -name '*.sh' | while read f; do cp -v "$f" "/usr/local/bin/`basename ${f%.sh}`"; done && \
+  find /tmp/script -type f -name '*.rb' | while read f; do cp -v "$f" "/usr/local/bin/`basename ${f%.rb}`"; done && \
+  rm -rf /tmp/script
+
+# Define entrypoint script.
+ENTRYPOINT ["/docker-entrypoint"]
+
+# Define default command.
+CMD ["/usr/local/bin/notify"]
