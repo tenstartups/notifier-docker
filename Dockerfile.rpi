@@ -9,7 +9,7 @@ FROM tenstartups/rpi-alpine-ruby
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
 # Install ruby gems.
-RUN gem install colorize hipchat rest-client slack-notifier --no-ri --no-rdoc
+RUN gem install colorize hipchat rest-client slack-notifier
 
 # Add files to the container.
 COPY entrypoint.sh /docker-entrypoint
