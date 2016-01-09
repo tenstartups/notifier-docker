@@ -4,7 +4,7 @@
 # http://github.com/tenstartups/notifier-docker
 #
 
-FROM tenstartups/alpine-ruby
+FROM tenstartups/alpine-ruby:latest
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
