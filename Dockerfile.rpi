@@ -10,7 +10,9 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
 # Install base packages.
 RUN \
-  apk --update add build-base ruby ruby-dev ruby-json && \
+  apk --update upgrade && \
+  apk --update add build-base ca-certificates ruby ruby-dev ruby-json && \
+  update-ca-certificates && \
   rm -rf /var/cache/apk/*
 
 # Install ruby gems.
