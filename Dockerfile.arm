@@ -1,10 +1,10 @@
 #
 # Notifier raspberry pi docker image
 #
-# http://github.com/tenstartups/rpi-notifier-docker
+# http://github.com/tenstartups/notifier-docker
 #
 
-FROM tenstartups/rpi-alpine:latest
+FROM tenstartups/alpine:arm
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
