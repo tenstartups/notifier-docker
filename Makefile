@@ -1,6 +1,7 @@
 ifeq ($(DOCKER_ARCH),armhf)
 	DOCKER_IMAGE_NAME := tenstartups/notifier:armhf
 else
+	DOCKER_ARCH := x64
 	DOCKER_IMAGE_NAME := tenstartups/notifier:latest
 endif
 

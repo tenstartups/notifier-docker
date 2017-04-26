@@ -8,6 +8,8 @@ FROM tenstartups/alpine:armhf
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
+RUN ["cross-build-start"]
+
 # Install base packages.
 RUN \
   apk --update upgrade && \
