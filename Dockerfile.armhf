@@ -8,9 +8,6 @@ FROM tenstartups/alpine:armhf
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
-# Start the qemu cross build system
-RUN ["cross-build-start"]
-
 # Install base packages.
 RUN \
   apk --update upgrade && \
