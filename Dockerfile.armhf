@@ -1,12 +1,14 @@
 #
-# Notifier raspberry pi docker image
+# Notifier Raspberry Pi docker image
 #
 # http://github.com/tenstartups/notifier-docker
 #
 
-FROM tenstartups/alpine:armhf
+FROM arm32v6/alpine:latest
 
 LABEL maintainer="Marc Lennox <marc.lennox@gmail.com>"
+
+COPY qemu-arm-static /usr/bin/
 
 # Install base packages.
 RUN \
