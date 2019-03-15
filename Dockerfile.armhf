@@ -10,10 +10,13 @@ LABEL maintainer="Marc Lennox <marc.lennox@gmail.com>"
 
 COPY qemu-arm-static /usr/bin/
 
+# Set environment variables.
+ENV \
+  TERM=xterm-color
+
 # Install base packages.
 RUN \
-  apk --update upgrade && \
-  apk --update add build-base ca-certificates ruby ruby-dev ruby-json && \
+  apk --update add bash build-base busybox-extras ca-certificates coreutils curl nano procps rsync ruby ruby-dev ruby-json tar wget && \
   update-ca-certificates && \
   rm -rf /var/cache/apk/*
 
